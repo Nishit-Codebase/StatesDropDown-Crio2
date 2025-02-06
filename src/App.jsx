@@ -8,8 +8,8 @@ function App() {
    const[State,setState] = useState([]);
    const[City,setCity] = useState([]);
    const [SelectedCountry,setselectedCounty] = useState("");
-   const [SelectedCity,setselectedCity] = useState("");
-
+   const [SelectedState,setselectedState] = useState("");
+  const[selectedcitymain,setselectedcitymain] = useState("");
 
 
    useEffect(()=>{
@@ -28,6 +28,8 @@ function App() {
 
    const countryset = (event) => {
       setselectedCounty(event.target.value);
+      setselectedState(""); // Reset State when Country changes
+      setselectedcitymain("");  // Reset City when Country changes
       // console.log(SelectedCountry);
    }
 
@@ -51,7 +53,7 @@ function App() {
    useEffect(()=>{  
     const getcity = async () =>{
     try{
-      let api = `https://crio-location-selector.onrender.com/country=${SelectedCountry}/state=${SelectedCity}/cities`;
+      let api = `https://crio-location-selector.onrender.com/country=${SelectedCountry}/state=${SelectedState}/cities`;
       let response = await fetch(api);
       let data = await response.json();
       setCity(data);
@@ -62,10 +64,14 @@ function App() {
     }
     getcity();
 
-   },[SelectedCity])
+   },[SelectedState])
 
    const setcityname = (e) =>{
-    setselectedCity(e.target.value);
+    setselectedState(e.target.value);
+   }
+
+   const setcitynamemain = (e) =>{
+      setselectedcitymain(e.target.value);
    }
    
 
@@ -97,18 +103,26 @@ console.log(State);
 
       
       </select>
-      <select disabled={!SelectedCity} style={{margin:"20px"}}>
+      <select disabled={!SelectedState} onChange={setcitynamemain} style={{margin:"20px"}}>
       <option value="" disabled selected>Select City</option>
       {
         City.map((cities,index) =>(
           <option key={index}>{cities}</option>
         )
-
         )
       }      
       </select>
+      <div>
+      {selectedcitymain && (
+            <div>
+               <h4>You selected <h2>{selectedcitymain}</h2>, {SelectedState}, {SelectedCountry}</h4>
+            </div>
+         )}
+
+      </div>
     </div>
 
+  
   )
 }
 
